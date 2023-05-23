@@ -45,8 +45,6 @@ export function Exemple2() {
   const [current, setCurrent] = useState<number>(1)
   const [next, setNext] = useState<number>(2)
 
-  const lastItemArray = casesList[casesList.length - 1]
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (current <= casesList.length) {
