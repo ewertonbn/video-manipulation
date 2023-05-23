@@ -45,38 +45,11 @@ export function Exemple2() {
   const [current, setCurrent] = useState<number>(1)
   const [next, setNext] = useState<number>(2)
 
-  // const currentCaseItem = casesList[0]
-  // const nextCaseItem = casesList[1]
-
-  // const loadingCase = useCallback(() => {
-
-  //   const index = 0
-  //   const nextVideo = 0
-
-  //   // setInterval(() => {
-  //   //   // for (let i = 0; i < 5; i++) {
-  //   //   // index++
-  //   //   // }
-  //   //   if (current < 10) {
-  //   //     setCurrent((state) => state + 1)
-  //   //   }
-  //   // }, 2000)
-
-  //   // nextVideo = index + 1
-  //   // currentVideo = array[index]
-
-  //   // setNext(nextVideo)
-
-  //   // console.log('Current: ' + current)
-  //   // console.log('Next: ' + next)
-
-  //   setCurrentCase(currentCaseItem)
-  //   setNextCase(nextCaseItem)
-  // }, [current])
+  const lastItemArray = casesList[casesList.length - 1]
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (current < 3) {
+      if (current <= casesList.length) {
         setCurrent((state) => state + 1)
         setNext((state) => state + 1)
 
@@ -86,18 +59,19 @@ export function Exemple2() {
         setCurrentCase(newCurrentCase)
         setNextCase(newNextCase)
         console.log(current + ' - ' + next)
-      } else {
+      }
+
+      if (current === casesList.length - 1) {
         setCurrent(0)
       }
 
-      if (next <= 2) {
-        setNext(1)
-        console.log(next)
+      // Zera contador preview para funcionar o lopping comparando quando chega na última posição
+      if (next === casesList.length - 1) {
+        setNext(0)
       }
-      // Valor do next está sempre a frente do current, precisa resetar no momento certo para iniciar tudo novamente
     }, 5000)
     return () => clearInterval(interval)
-  }, [current, next, currentCase])
+  }, [current, next])
 
   return (
     <>
