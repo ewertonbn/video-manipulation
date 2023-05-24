@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+
+import LazyLoad from 'react-lazy-load'
 
 import videoFile1 from '../../assets/itau.mp4'
 import videoFile2 from '../../assets/tramontina.mp4'
@@ -43,45 +45,72 @@ export function Exemple2() {
   const [isActive, setIsActive] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const [pause, setPause] = useState(false)
+  // const [pause, setPause] = useState(false)
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!pause) {
-        if (current <= casesList.length) {
-          setCurrent((state) => state + 1)
-          setNext((state) => state + 1)
+  // useEffect(() => {
+  //   let current = 0
+  //   let next = 1
 
-          const newCurrentCase = casesList[current]
-          const newNextCase = casesList[next]
+  //   const interval = setInterval(() => {
+  //     if (!pause) {
+  //       if (current <= casesList.length) {
+  //         // setCurrent((state) => state + 1)
+  //         // setNext((state) => state + 1)
+  //         current = current + 1
+  //         next = next + 1
 
-          setCurrentCase(newCurrentCase)
-          setNextCase(newNextCase)
-          console.log(current + ' - ' + next)
-        }
+  //         const newCurrentCase = casesList[current]
+  //         const newNextCase = casesList[next]
 
-        if (current === casesList.length - 1) {
-          setCurrent(0)
-        }
+  //         setCurrentCase(newCurrentCase)
+  //         setNextCase(newNextCase)
+  //         console.log(current + ' - ' + next)
+  //       }
 
-        if (next === casesList.length - 1) {
-          setNext(0)
-        }
-      }
-    }, 6000)
-    return () => clearInterval(interval)
-  }, [current, next, pause])
+  //       if (current === casesList.length - 1) {
+  //         // setCurrent(0)
+  //         current = -1
+  //       }
+
+  //       if (next === casesList.length - 1) {
+  //         // setNext(0)
+  //         next = -1
+  //       }
+  //     }
+  //   }, 6000)
+  //   return () => clearInterval(interval)
+  // }, [pause])
+
+  function onVideoEnded() {
+    setCurrent((state) => state + 1)
+    setNext((state) => state + 1)
+
+    const newCurrentCase = casesList[current]
+    const newNextCase = casesList[next]
+
+    setCurrentCase(newCurrentCase)
+    setNextCase(newNextCase)
+    console.log(current + ' - ' + next)
+
+    if (current === casesList.length - 1) {
+      setCurrent(0)
+    }
+
+    if (next === casesList.length - 1) {
+      setNext(0)
+    }
+  }
 
   function handleOnFocusedVideo() {
-    setIsActive(true)
     videoRef.current?.pause()
-    setPause(true)
+    setIsActive(true)
+    // setPause(true)
   }
 
   function handleNotFocusedVideo() {
-    setIsActive(false)
     videoRef.current?.play()
-    setPause(false)
+    setIsActive(false)
+    // setPause(false)
   }
 
   return (
@@ -89,19 +118,22 @@ export function Exemple2() {
       <Link to="/">Home</Link>
       <div className="videoContainer">
         <div>
-          <video
-            key={currentCase.id}
-            loop
-            playsInline
-            muted
-            autoPlay
-            controls
-            ref={videoRef}
-            onMouseEnter={handleOnFocusedVideo}
-            onMouseLeave={handleNotFocusedVideo}
-          >
-            <source type="video/mp4" src={currentCase.src} />
-          </video>
+          <LazyLoad>
+            <video
+              key={currentCase.id}
+              loop={false}
+              playsInline
+              muted
+              autoPlay
+              controls
+              ref={videoRef}
+              onEnded={() => onVideoEnded()}
+              onMouseEnter={handleOnFocusedVideo}
+              onMouseLeave={handleNotFocusedVideo}
+            >
+              <source type="video/mp4" src={currentCase.src} />
+            </video>
+          </LazyLoad>
           <div
             className={`modal ${isActive ? 'active' : ''}`}
             onMouseEnter={handleOnFocusedVideo}
@@ -118,9 +150,11 @@ export function Exemple2() {
         </div>
 
         <div>
-          <video key={nextCase.id} loop playsInline muted autoPlay controls>
-            <source type="video/mp4" src={nextCase.src} />
-          </video>
+          <LazyLoad>
+            <video key={nextCase.id} loop playsInline muted autoPlay controls>
+              <source type="video/mp4" src={nextCase.src} />
+            </video>
+          </LazyLoad>
         </div>
       </div>
     </>
