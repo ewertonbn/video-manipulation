@@ -104,12 +104,12 @@ export function Exemple2() {
             onMouseLeave={handleNotFocusedVideo}
           >
             <h1>{currentCase.name}</h1>
-            <a
-              href={`/case/${currentCase.slug}`}
+            <Link
+              to={`/case/${currentCase.slug}`}
               className={`${isActive ? 'active' : ''}`}
             >
               Acessar {currentCase.name}
-            </a>
+            </Link>
           </div>
         </div>
 
